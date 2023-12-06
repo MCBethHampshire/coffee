@@ -3,3 +3,32 @@
     flex-direction: column;
     justify-content: center;
 }
+
+.container a {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.formGroup label {
+    display: block;
+    font-size: 0.75rem;
+}
+
+.form {
+    display: flex;
+    flex-direction: row;
+}
+
+.buttonContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-left: 0.5rem;
+}
+
+.error {
+    color: red;
+    display: block;
+    font-size: 0.75rem;
+}

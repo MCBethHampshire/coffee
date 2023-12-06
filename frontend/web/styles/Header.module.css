@@ -4,11 +4,12 @@
     justify-content: space-between;
     padding: 0.5rem 1rem;
     background-color: bisque;
+    width: 100vw;
 }
 
 .logo {
-    width: 85px;
-    height: 85px;
+    width: 64px;
+    height: 64px;
     border-radius: 50%;
     overflow: hidden;
     display: inline-block;
