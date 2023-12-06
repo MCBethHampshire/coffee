@@ -1,0 +1,26 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    background-color: bisque;
+}
+
+.logo {
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.nameContainer {
+    display: flex;
+    align-items: center;
+    font-size: 3rem;
+}
+
+.header {
+    display: inline;
+    margin-left: 1rem;
+}
