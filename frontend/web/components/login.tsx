@@ -25,7 +25,8 @@ const Login = () => {
                     <label htmlFor="email"> Email</label>
                     <input 
                     id="email"
-                    placeholder="Enter your email" 
+                    placeholder="Enter your email"
+                    role="textbox"
                     {...register("identifier", {
                         required: 'Required', 
                         minLength: {value: 6, message: "Min length 6"}, 
@@ -38,6 +39,7 @@ const Login = () => {
                     <input 
                     id="password"
                     placeholder="Enter your password" 
+                    role="textbox"
                     type="password" 
                     {...register("password", {
                         required: 'Required', 
