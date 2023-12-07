@@ -2,41 +2,55 @@ import Link from 'next/link';
 import Header from '../components/header';
 import styles from '../styles/Login.module.css';
 import { useForm } from 'react-hook-form';
+import { NextPage } from 'next';
 
-export type LoginForm = {
-    identifier: string;
+export type SignupForm = {
+    username: string;
+    email: string;
     password: string;
 };
 
-const Login = () => {
+const Signup: NextPage = () => {
     const { 
         register, 
         handleSubmit, 
         formState: { errors} , 
-    } = useForm<LoginForm>();
+    } = useForm<SignupForm>();
 
-    const onSubmit = (data: LoginForm) => {
+    const onSubmit = (data: SignupForm) => {
         console.log(data);
     };
 
     return <>
-
       <Header />
+      Sign up
     <div className={styles.container}>
         <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
             <div className={styles.formGroups}>
                 <div className={styles.formGroup}>
-                    <label htmlFor="email"> Email</label>
+                    <label htmlFor="username">Username</label>
+                    <input 
+                    id="username"
+                    placeholder="Enter your username"
+                    role="textbox"
+                    {...register("username", {
+                        required: 'Required', 
+                        minLength: {value: 6, message: "Min length 6"}, 
+                        })}/>
+                    {errors.username ? <span className={styles.error}>{errors.username?.message}</span> : <>&nbsp;</>}
+                </div>
+                <div className={styles.formGroup}>
+                    <label htmlFor="email">Email</label>
                     <input 
                     id="email"
                     placeholder="Enter your email"
                     role="textbox"
-                    {...register("identifier", {
+                    {...register("email", {
                         required: 'Required', 
-                        minLength: {value: 6, message: "Min length 6"}, 
-                        pattern: {value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: "Invalid email address"},
+                        minLength: {value: 6, message: "Min length 6"},
+                        pattern: {value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: "Invalid email address"}, 
                         })}/>
-                    {errors.identifier ? <span className={styles.error}>{errors.identifier?.message}</span> : <>&nbsp;</>}
+                    {errors.email ? <span className={styles.error}>{errors.email?.message}</span> : <>&nbsp;</>}
                 </div>
                 <div className={styles.formGroup}>
                     <label htmlFor="password">Password</label>
@@ -53,10 +67,13 @@ const Login = () => {
                 </div>
             </div>
             <div className={styles.buttonContainer}>
-                <button type="submit">Sign in</button>
-                <Link href="/signup">
-                    <span>Create account</span>
-                </Link>
+                <button type="submit">Create</button>
+                <div>
+                    <p>Already have an account?</p>
+                    <Link href="/login">
+                        <span>Login</span>
+                    </Link>
+                </div>
             </div>
         </form>
         <style jsx global>{`
@@ -86,4 +103,4 @@ const Login = () => {
     </>;
 };
 
-export default Login;
+export default Signup;
