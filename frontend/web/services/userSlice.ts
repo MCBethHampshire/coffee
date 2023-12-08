@@ -15,6 +15,12 @@ export type LoginData = {
     password?: string,
 }
 
+export type RegistrationData = {
+    username: string;
+    email: string;
+    password: string;
+}
+
 type UserPaylod = { 
     jwt: string; 
     user: { 
@@ -34,13 +40,14 @@ export const userSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         //Login flow
-        builder.addCase(login.fulfilled, (state, { payload }) => {
-            state.requestState = "fulfilled";
-            state.jwt = payload.jwt;
-            state.username = payload.user.username;
-            state.email = payload.user.email;
-            state.error = undefined;
-        })
+        builder
+        // .addCase(login.fulfilled, (state, { payload }) => {
+        //     state.requestState = "fulfilled";
+        //     state.jwt = payload.jwt;
+        //     state.username = payload.user.username;
+        //     state.email = payload.user.email;
+        //     state.error = undefined;
+        // })
         .addCase(login.pending, (state) => {
             state.requestState = "pending";
             state.error = undefined;
@@ -52,6 +59,16 @@ export const userSlice = createSlice({
         });
         //Logout flow
         builder.addCase(logout.fulfilled, () => initialState);
+        builder.addMatcher<PayloadAction<UserPaylod>>(
+            (action) => /\/(login|registration)\/fulfilled$/.test(action.type),
+            (state, { payload }) => {
+                state.requestState = "fulfilled";
+                state.jwt = payload.jwt;
+                state.username = payload.user.username;
+                state.email = payload.user.email;
+                state.error = undefined;
+                }
+            );
     },
 });
 
@@ -115,3 +132,29 @@ export const login = createAsyncThunk<UserPaylod, LoginData>(
 );
 
 export const logout = createAsyncThunk("user/logout", async () => clearUserInfoFromLocalStorage());
+
+export const registration = createAsyncThunk<UserPaylod, RegistrationData>(
+    "user/registration", 
+    async(data, { rejectWithValue }) => {
+        try {
+            const response = await fetch(`${api_url}/auth/local/register`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+
+            if (response.status < 200 || response.status >= 300) {
+                return rejectWithValue(result);
+            }
+
+            setupUserInfoToLocalStorage(result);
+            return(result);
+        } catch(error) {
+            return rejectWithValue(error);
+        }
+    }
+);
