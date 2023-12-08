@@ -1,5 +1,6 @@
 import { reducer, actions, initialState, login } from "./userSlice";
 import { mockUser } from "../mocks/user";
+import { storeCreator } from "../store";
 
 const updatedState = {
   jwt: mockUser.jwt,
@@ -101,6 +102,29 @@ describe("User slice check", () => {
             ...initialState,
             error: payloadError.error,
             requestState: "rejected"
+        });
+    });
+  });
+
+  describe("Login async flow", () => {
+    it("success login flow", async () => {
+        const store = storeCreator();
+        const stateBeforeLogin = store.getState();
+
+        expect(stateBeforeLogin).toEqual({
+            user: {
+                ...initialState,
+            },
+        });
+
+        await store.dispatch(login(loginData));
+        const storeAfterLogin = store.getState();
+
+        expect(storeAfterLogin).toEqual({
+            user: {
+                ...updatedState,
+                requestState: "fulfilled",
+            },
         });
     });
   });
