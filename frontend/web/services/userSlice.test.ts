@@ -15,6 +15,20 @@ describe("User slice check", () => {
                 updatedState
             );
         });
+
+        it("should only update the jwt", () => {
+            expect(
+                reducer(
+                    initialState, 
+                    actions.update({
+                        jwt: updatedState.jwt,
+                    })
+                )
+            ).toEqual({
+                ...initialState,
+                jet: updatedState.jwt,
+            });
+        })
     });
 });
 
