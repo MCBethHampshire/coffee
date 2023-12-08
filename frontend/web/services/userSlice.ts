@@ -33,6 +33,7 @@ export const userSlice = createSlice({
     initialState,
     reducers: {},
     extraReducers: (builder) => {
+        //Login flow
         builder.addCase(login.fulfilled, (state, { payload }) => {
             state.requestState = "fulfilled";
             state.jwt = payload.jwt;
@@ -49,7 +50,9 @@ export const userSlice = createSlice({
             const payloadError = (payload as {error: SerializedError})?.error;
             state.error = payloadError;
         });
-    }
+        //Logout flow
+        builder.addCase(logout.fulfilled, () => initialState);
+    },
 });
 
 export const { actions, reducer } = userSlice;
@@ -110,3 +113,5 @@ export const login = createAsyncThunk<UserPaylod, LoginData>(
         }
     }
 );
+
+export const logout = createAsyncThunk("user/logout", async () => clearUserInfoFromLocalStorage());
