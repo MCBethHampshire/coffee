@@ -26,7 +26,7 @@ describe("User slice check", () => {
                 )
             ).toEqual({
                 ...initialState,
-                jet: updatedState.jwt,
+                jwt: updatedState.jwt,
             });
         })
     });
