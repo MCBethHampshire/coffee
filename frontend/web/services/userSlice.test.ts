@@ -1,6 +1,5 @@
 import { reducer, actions, initialState} from "./userSlice";
 import { mockUser } from "../mocks/user";
-import { mock } from "node:test";
 
 const updatedState = {
     jwt: mockUser.jwt,
@@ -28,7 +27,22 @@ describe("User slice check", () => {
                 ...initialState,
                 jwt: updatedState.jwt,
             });
-        })
+        });
+
+        it("should clear the state", () => {
+            const stateWithUpdatedValues = reducer(
+                initialState,
+                actions.update(updatedState)
+            );
+
+            //expect(stateWithUpdatedValues).toEqual(updatedState);
+
+            expect(reducer(stateWithUpdatedValues, actions.clear())).toEqual({
+                jwt: "",
+                username: "",
+                email: "",
+            });
+        });
     });
 });
 
