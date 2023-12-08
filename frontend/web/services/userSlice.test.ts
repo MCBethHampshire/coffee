@@ -1,5 +1,5 @@
 import { reducer, actions, initialState, login } from "./userSlice";
-import { mockUser } from "../mocks/user";
+import { mockUser, ValidationError } from "../mocks/user";
 import { storeCreator } from "../store";
 
 const updatedState = {
@@ -16,43 +16,6 @@ const loginData = {
 const requestId: string = "someoid";
 
 describe("User slice check", () => {
-  describe("Update state actions", () => {
-    it("should update the full state", () => {
-      expect(reducer(initialState, actions.update(updatedState))).toEqual(
-        updatedState
-      );
-    });
-
-    it("should only update the jwt", () => {
-      expect(
-        reducer(
-          initialState,
-          actions.update({
-            jwt: updatedState.jwt,
-          })
-        )
-      ).toEqual({
-        ...initialState,
-        jwt: updatedState.jwt,
-      });
-    });
-
-    it("should clear the state", () => {
-      const stateWithUpdatedValues = reducer(
-        initialState,
-        actions.update(updatedState)
-      );
-
-      expect(stateWithUpdatedValues).toEqual(updatedState);
-
-      expect(reducer(stateWithUpdatedValues, actions.clear())).toEqual({
-        jwt: "",
-        username: "",
-        email: "",
-      });
-    });
-  });
-
   describe("Login state flow", () => {
     it("should set the request state to pending", () => {
       expect(
@@ -107,6 +70,11 @@ describe("User slice check", () => {
   });
 
   describe("Login async flow", () => {
+
+    beforeEach(() => {
+        localStorage.clear();
+    });
+
     it("success login flow", async () => {
         const store = storeCreator();
         const stateBeforeLogin = store.getState();
@@ -125,6 +93,44 @@ describe("User slice check", () => {
                 ...updatedState,
                 requestState: "fulfilled",
             },
+        });
+
+        //Check local storage
+        expect(localStorage.getItem("jwt")).toBe(mockUser.jwt);
+        expect(localStorage.getItem("username")).toBe(mockUser.user.username);
+        expect(localStorage.getItem("email")).toBe(mockUser.user.email);
+    });
+
+    it("fail login flow", async () => {
+        const store = storeCreator();
+        await store.dispatch(login({
+            ...loginData,
+            password: "wrongpassword"
+        }));
+        const state = store.getState();
+
+        expect(state).toEqual({
+            user: {
+                ...initialState,
+                requestState: "rejected",
+                ...ValidationError
+            }
+        });
+    });
+
+    it("login flow with saved jwt", async () => {
+        //Set jwt token
+        localStorage.setItem("jwt", mockUser.jwt);
+
+        const store = storeCreator();
+        await store.dispatch(login({}));
+        const state = store.getState();
+
+        expect(state).toEqual({
+            user: {
+                ...updatedState,
+                requestState: "fulfilled"
+            }
         });
     });
   });
