@@ -1,9 +1,13 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction, SerializedError } from "@reduxjs/toolkit";
+
+type RequestState = "pending" | "fulfilled" | "rejected";
 
 export type UserState = {
     jwt: string;
     username: string;
     email: string;
+    requestState?: RequestState;
+    error?: SerializedError;
 };
 
 export type LoginData = {
@@ -34,6 +38,15 @@ export const userSlice = createSlice({
         }),
         clear: () => initialState,
     },
+    extraReducers: (builder) => {
+        builder.addCase(login.fulfilled, (state, { payload }) => {
+            state.requestState = "fulfilled";
+            state.jwt = payload.jwt;
+            state.username = payload.user.username;
+            state.email = payload.user.email;
+            state.error = undefined;
+        });
+    }
 });
 
 export const { actions, reducer } = userSlice;
