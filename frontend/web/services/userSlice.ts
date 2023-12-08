@@ -45,6 +45,15 @@ export const userSlice = createSlice({
             state.username = payload.user.username;
             state.email = payload.user.email;
             state.error = undefined;
+        })
+        .addCase(login.pending, (state) => {
+            state.requestState = "pending";
+            state.error = undefined;
+        })
+        .addCase(login.rejected, (state, { payload }) => {
+            state.requestState = "rejected";
+            const payloadError = (payload as {error: SerializedError})?.error;
+            state.error = payloadError;
         });
     }
 });
