@@ -1,6 +1,12 @@
-import { reducer, actions, initialState, login } from "./userSlice";
+import { reducer, initialState, login } from "./userSlice";
 import { mockUser, ValidationError } from "../mocks/user";
-import { storeCreator } from "../store";
+import { storeCreator as globalStoreCreator } from "../store";
+
+const rootReducer = {
+    user: reducer,
+};
+
+const storeCreator = () => globalStoreCreator(rootReducer);
 
 const updatedState = {
   jwt: mockUser.jwt,

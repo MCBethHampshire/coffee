@@ -5,9 +5,9 @@ export const rootReducer = {
     user: userSlice.reducer,
 };
 
-export const storeCreator = () => 
+export const storeCreator = (reducer = rootReducer) => 
     configureStore({
-        reducer: rootReducer,
+        reducer: reducer,
     });
 
 export const store = storeCreator();
