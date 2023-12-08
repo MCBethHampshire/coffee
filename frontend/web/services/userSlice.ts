@@ -39,38 +39,37 @@ export const userSlice = createSlice({
     initialState,
     reducers: {},
     extraReducers: (builder) => {
-        //Login flow
-        builder
-        // .addCase(login.fulfilled, (state, { payload }) => {
-        //     state.requestState = "fulfilled";
-        //     state.jwt = payload.jwt;
-        //     state.username = payload.user.username;
-        //     state.email = payload.user.email;
-        //     state.error = undefined;
-        // })
-        .addCase(login.pending, (state) => {
-            state.requestState = "pending";
+      // Logout flow
+      builder.addCase(logout.fulfilled, () => initialState);
+  
+      /** Login/registration flow */
+      builder
+        .addMatcher<PayloadAction<UserPaylod>>(
+          (action) => /\/(login|registration)\/fulfilled$/.test(action.type),
+          (state, { payload }) => {
+            state.requestState = "fulfilled";
+            state.jwt = payload.jwt;
+            state.username = payload.user.username;
+            state.email = payload.user.email;
             state.error = undefined;
-        })
-        .addCase(login.rejected, (state, { payload }) => {
-            state.requestState = "rejected";
-            const payloadError = (payload as {error: SerializedError})?.error;
+          }
+        )
+        .addMatcher(
+          (action) => action.type.endsWith("/pending"),
+          (state) => {
+            state.requestState = "pending";
+          }
+        )
+        .addMatcher(
+          (action) => action.type.endsWith("/rejected"),
+          (state, { payload }) => {
+            const payloadError = (payload as { error: SerializedError })?.error;
             state.error = payloadError;
-        });
-        //Logout flow
-        builder.addCase(logout.fulfilled, () => initialState);
-        builder.addMatcher<PayloadAction<UserPaylod>>(
-            (action) => /\/(login|registration)\/fulfilled$/.test(action.type),
-            (state, { payload }) => {
-                state.requestState = "fulfilled";
-                state.jwt = payload.jwt;
-                state.username = payload.user.username;
-                state.email = payload.user.email;
-                state.error = undefined;
-                }
-            );
+            state.requestState = "rejected";
+          }
+        );
     },
-});
+  });
 
 export const { actions, reducer } = userSlice;
 

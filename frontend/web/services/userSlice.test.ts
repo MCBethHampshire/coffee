@@ -1,6 +1,6 @@
-import { reducer, initialState, login, logout } from "./userSlice";
-import { mockUser, ValidationError } from "../mocks/user";
-import { storeCreator as globalStoreCreator } from "../store";
+import { reducer, initialState, login, logout, registration } from "./userSlice";
+import { mockUser, ValidationError, RegistrationError } from "../mocks/user";
+import { storeCreator as globalStoreCreator, store } from "../store";
 
 const rootReducer = {
     user: reducer,
@@ -17,6 +17,12 @@ const updatedState = {
 const loginData = {
   identifier: mockUser.user.email,
   password: mockUser.user.password,
+};
+
+const registrationData = {
+    username: mockUser.user.username,
+    email: mockUser.user.email,
+    password: mockUser.user.password,
 };
 
 const requestId: string = "someoid";
@@ -177,9 +183,47 @@ describe("User slice check", () => {
         expect(localStorage.getItem("username")).toBe(null);
         expect(localStorage.getItem("email")).toBe(null);
     });
+  });
 
+  describe("Registration state flow", () => {
+    it("fail registration flow", async () => {
+        const store = storeCreator();
+        await store.dispatch(
+            registration({ email: "test", username: "test", password: "wrong"})
+        );
 
+        const state = store.getState();
 
-    
+        expect(state).toEqual({
+            user: {
+                jwt: "",
+                username: "",
+                email: "",
+                ...RegistrationError,
+                requestState: "rejected",
+            },
+        });
+
+        expect(localStorage.getItem("jwt")).toBe(null);
+        expect(localStorage.getItem("username")).toBe(null);
+        expect(localStorage.getItem("email")).toBe(null);
+    });
+
+    it("succeeds registration flow", async () => {
+        const store = storeCreator();
+        await store.dispatch(registration(registrationData));
+        const state = store.getState();
+
+        expect(state).toEqual({
+            user: {
+                ...updatedState,
+                requestState: "fulfilled",
+            },
+        });
+
+        expect(localStorage.getItem("jwt")).toBe(mockUser.jwt);
+        expect(localStorage.getItem("username")).toBe(mockUser.user.username);
+        expect(localStorage.getItem("email")).toBe(mockUser.user.email);
+    });
   });
 });
