@@ -35,7 +35,7 @@ describe("User slice check", () => {
                 actions.update(updatedState)
             );
 
-            //expect(stateWithUpdatedValues).toEqual(updatedState);
+            expect(stateWithUpdatedValues).toEqual(updatedState);
 
             expect(reducer(stateWithUpdatedValues, actions.clear())).toEqual({
                 jwt: "",
