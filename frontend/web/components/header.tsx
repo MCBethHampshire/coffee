@@ -2,9 +2,14 @@ import Image from "next/image";
 import logo from "../assets/logo.jpg";
 import styles from '../styles/Header.module.css';
 import Link from "next/link";
+import { FC } from "react";
+import NavigationMenu from "./navigation-menu";
 
-const Header = () => {
-    const hasUsername = false;
+type Props = {
+    username: string
+}
+
+const Header:FC<Props> = ({username}: Props) => {
     return <>
     <div className={styles.container}>
         <div className={styles.nameContainer}>
@@ -16,18 +21,25 @@ const Header = () => {
             <header className={styles.header}>FACE</header>
         </div>
 
-        { hasUsername ? 
-        <span className={styles.error}>hi  beth</span>
-         : <>nope</>}
+        <NavigationMenu username={username}/>
 
         <div className={styles.buttonContainer}>
-            <Link href="/login">
-                <button>Log in</button>
-            </Link>
-            <Link href="/signup">
-                <button>Sign up</button>
-            </Link>
-            
+            {username ? 
+                <div>
+                    <Link href="/user">
+                    <button>Account</button>
+                    </Link>
+                </div>
+            : 
+                <div>
+                    <Link href="/login">
+                        <button>Log in</button>
+                    </Link>
+                    <Link href="/signup">
+                        <button>Sign up</button>
+                    </Link>
+                </div>
+            }
         </div>
     </div>
        

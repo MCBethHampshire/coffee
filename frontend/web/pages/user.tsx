@@ -7,27 +7,29 @@ import { useRouter } from 'next/router';
 import { useEffect } from "react";
 
 const User: NextPage = () => {
-    const { username, email, error } = useSelector<RootState, RootState["user"]>(selectUser);
+    const { username, email, error, jwt } = useSelector<RootState, RootState["user"]>(selectUser);
+
+    console.log(username, jwt);
 
     const router = useRouter();
 
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
-        if (!username || Boolean(error)) {
+        if (!email || Boolean(error)) {
             dispatch(logout());
             router.push("/login");
         }
     }, []);
 
     const logoutHandler = async () => {
-        dispatch(logout);
+        dispatch(logout());
         router.push("/");
     };
 
     return (username && email) ? (
     <>
-        <Header />
+        <Header username={username}/>
         <h1>
             Profile
         </h1>
@@ -36,8 +38,31 @@ const User: NextPage = () => {
         <h2>Email</h2>
         <span>{email}</span>
         <button onClick={logoutHandler}>Logout</button>
+        <style jsx global>{`
+        html,
+        body {
+          padding: 0;
+          margin: 0;
+          font-family:
+            -apple-system,
+            BlinkMacSystemFont,
+            Segoe UI,
+            Roboto,
+            Oxygen,
+            Ubuntu,
+            Cantarell,
+            Fira Sans,
+            Droid Sans,
+            Helvetica Neue,
+            sans-serif;
+        }
+        * {
+          box-sizing: border-box;
+        }
+      `}</style>
     </>
     ) : null;
+    
 };
 
 export default User;

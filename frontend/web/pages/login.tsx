@@ -22,7 +22,8 @@ const Login: NextPage = () => {
 
     const router = useRouter();
 
-    const { jwt, error } = useSelector<RootState, RootState["user"]>(selectUser);
+    const { jwt, error, username } = useSelector<RootState, RootState["user"]>(selectUser);
+    console.log(jwt, username);
 
     const dispatch = useDispatch<AppDispatch>();
 
@@ -37,7 +38,7 @@ const Login: NextPage = () => {
 
     return <>
 
-      <Header />
+      <Header username={username}/>
     <div className={styles.container}>
         <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
             <h3>

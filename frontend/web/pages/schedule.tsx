@@ -1,24 +1,19 @@
-import Head from 'next/head';
-import styles from '../styles/Home.module.css';
-import Header from '../components/header';
+import { NextPage } from "next";
+import Header from "../components/header";
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { selectUser } from '../services/userSlice';
 
-export default function Home() {
-  const { username } = useSelector<RootState, RootState["user"]>(selectUser);
 
-  return (
-    <div className={styles.container}>
-      <Head>
-      </Head>
-      <Header username={username}/>
-      <main>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+const Schedule: NextPage = () => {
+    const { username} = useSelector<RootState, RootState["user"]>(selectUser);
+
+    return <>
+        <Header username={username}/>
+        <h1>
+            Schedule
         </h1>
-      </main>
-      <style jsx global>{`
+        <style jsx global>{`
         html,
         body {
           padding: 0;
@@ -40,6 +35,7 @@ export default function Home() {
           box-sizing: border-box;
         }
       `}</style>
-    </div>
-  );
-}
+    </>
+};
+
+export default Schedule;

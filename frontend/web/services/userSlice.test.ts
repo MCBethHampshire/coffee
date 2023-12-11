@@ -135,7 +135,7 @@ describe("User slice check", () => {
         localStorage.setItem("jwt", mockUser.jwt);
 
         const store = storeCreator();
-        await store.dispatch(login({}));
+        await store.dispatch(login(loginData));
         const state = store.getState();
 
         expect(state).toEqual({

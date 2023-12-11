@@ -12,8 +12,8 @@ export type UserState = {
 };
 
 export type LoginData = {
-    identifier?: string, 
-    password?: string,
+    identifier: string, 
+    password: string,
 }
 
 export type RegistrationData = {
@@ -88,28 +88,37 @@ const setupUserInfoToLocalStorage = (result: UserPaylod) => {
     localStorage.setItem("jwt", result.jwt);
     localStorage.setItem("username", result?.user?.username);
     localStorage.setItem("email", result?.user?.email);
-}
+};
 
-export const login = createAsyncThunk<UserPaylod, LoginData>(
-    "user/login",
-    async (loginData, {rejectWithValue}) => {
-        try {
-            const jwt = localStorage.getItem("jwt");
-
-        const response = jwt ?
-            await fetch(`${api_url}/users/me`, {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${jwt}`,
-                }
-            })
-        : await fetch(`${api_url}/auth/local`, {
+const createRequest = ( jwt: string | null, loginData: LoginData | undefined) => {
+    if (jwt && !loginData) {
+        return fetch(`${api_url}/users/me`, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${jwt}`,
+            },
+        });
+    }
+    if (loginData) {
+        return fetch(`${api_url}/auth/local`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(loginData),
         });
+    }
+    throw { error: "Invalid login request"};
+};
+
+export const login = createAsyncThunk<UserPaylod, LoginData | undefined>(
+    "user/login",
+    async (loginData, {rejectWithValue}) => {
+        try {
+            const jwt = localStorage.getItem("jwt");
+
+        const response = await createRequest(jwt, loginData);
+        console.log(response);
 
         const data = await response.json();
 
