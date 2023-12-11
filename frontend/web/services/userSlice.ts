@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction, SerializedError } from "@reduxjs/toolkit";
+import { RootState } from "../store";
 
 type RequestState = "pending" | "fulfilled" | "rejected";
 
@@ -33,6 +34,8 @@ export const initialState: UserState = {
     username: "",
     email: "",
 };
+
+export const selectUser = ({ user }: RootState) => user;
 
 export const userSlice = createSlice({
     name: "user",

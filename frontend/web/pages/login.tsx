@@ -2,21 +2,37 @@ import Link from 'next/link';
 import Header from '../components/header';
 import styles from '../styles/Login.module.css';
 import { useForm } from 'react-hook-form';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from '../store';
+import { selectUser, login } from '../services/userSlice';
+import { NextPage } from 'next';
+import { useRouter } from 'next/router';
 
 export type LoginForm = {
     identifier: string;
     password: string;
 };
 
-const Login = () => {
+const Login: NextPage = () => {
     const { 
         register, 
         handleSubmit, 
         formState: { errors} , 
     } = useForm<LoginForm>();
 
+    const router = useRouter();
+
+    const { jwt, error } = useSelector<RootState, RootState["user"]>(selectUser);
+
+    const dispatch = useDispatch<AppDispatch>();
+
+    if (Boolean(jwt) && !error) {
+        router.push("/user");
+    }
+
     const onSubmit = (data: LoginForm) => {
         console.log(data);
+        dispatch(login(data));
     };
 
     return <>
@@ -24,6 +40,9 @@ const Login = () => {
       <Header />
     <div className={styles.container}>
         <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+            <h3>
+                {error?.message}
+            </h3>
             <div className={styles.formGroups}>
                 <div className={styles.formGroup}>
                     <label htmlFor="email"> Email</label>
