@@ -4,6 +4,7 @@ import styles from '../styles/Header.module.css';
 import Link from "next/link";
 
 const Header = () => {
+    const hasUsername = false;
     return <>
     <div className={styles.container}>
         <div className={styles.nameContainer}>
@@ -14,6 +15,11 @@ const Header = () => {
             </Link>
             <header className={styles.header}>FACE</header>
         </div>
+
+        { hasUsername ? 
+        <span className={styles.error}>hi  beth</span>
+         : <>nope</>}
+
         <div className={styles.buttonContainer}>
             <Link href="/login">
                 <button>Log in</button>
