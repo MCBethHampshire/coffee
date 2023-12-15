@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 import { useEffect } from "react";
 
 const User: NextPage = () => {
-    const { username, email, error, jwt } = useSelector<RootState, RootState["user"]>(selectUser);
+    const { username, email, error, jwt, userType } = useSelector<RootState, RootState["user"]>(selectUser);
 
     console.log(username, jwt);
 
@@ -29,7 +29,7 @@ const User: NextPage = () => {
 
     return (username && email) ? (
     <>
-        <Header username={username}/>
+        <Header username={username} userType={userType} />
         <h1>
             Profile
         </h1>
@@ -37,6 +37,8 @@ const User: NextPage = () => {
         <span>{username}</span>
         <h2>Email</h2>
         <span>{email}</span>
+        <h2>Role</h2>
+        <span>{userType}</span>
         <button onClick={logoutHandler}>Logout</button>
         <style jsx global>{`
         html,

@@ -7,6 +7,7 @@ export type UserState = {
     jwt: string;
     username: string;
     email: string;
+    userType?: string;
     requestState?: RequestState;
     error?: SerializedError;
 };
@@ -27,12 +28,14 @@ type UserPaylod = {
     user: { 
         username: string; 
         email: string; 
+        userType: string;
     }};
 
 export const initialState: UserState = {
     jwt: "",
     username: "",
     email: "",
+    userType: "",
 };
 
 export const selectUser = ({ user }: RootState) => user;
@@ -54,6 +57,7 @@ export const userSlice = createSlice({
             state.jwt = payload.jwt;
             state.username = payload.user.username;
             state.email = payload.user.email;
+            state.userType = payload.user.userType;
             state.error = undefined;
           }
         )
@@ -82,12 +86,14 @@ const clearUserInfoFromLocalStorage = () => {
     localStorage.removeItem("jwt");
     localStorage.removeItem("username");
     localStorage.removeItem("email");
+    localStorage.removeItem("role");
 };
 
 const setupUserInfoToLocalStorage = (result: UserPaylod) => {
     localStorage.setItem("jwt", result.jwt);
     localStorage.setItem("username", result?.user?.username);
     localStorage.setItem("email", result?.user?.email);
+    localStorage.setItem("role", result?.user?.userType)
 };
 
 const createRequest = ( jwt: string | null, loginData: LoginData | undefined) => {
@@ -118,7 +124,6 @@ export const login = createAsyncThunk<UserPaylod, LoginData | undefined>(
             const jwt = localStorage.getItem("jwt");
 
         const response = await createRequest(jwt, loginData);
-        console.log(response);
 
         const data = await response.json();
 

@@ -6,10 +6,11 @@ import { FC } from "react";
 import NavigationMenu from "./navigation-menu";
 
 type Props = {
-    username: string
+    username: string,
+    userType: string,
 }
 
-const Header:FC<Props> = ({username}: Props) => {
+const Header:FC<Props> = ({username, userType}: Props) => {
     return <>
     <div className={styles.container}>
         <div className={styles.nameContainer}>
@@ -21,7 +22,7 @@ const Header:FC<Props> = ({username}: Props) => {
             <header className={styles.header}>FACE</header>
         </div>
 
-        <NavigationMenu username={username}/>
+        <NavigationMenu username={username} userType={userType}/>
 
         <div className={styles.buttonContainer}>
             {username ? 

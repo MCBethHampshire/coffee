@@ -4,12 +4,18 @@ import { FC } from "react";
 
 type Props = {
     username: string
+    userType: string
 }
 
-const NavigationMenu:FC<Props> = ({username}: Props) => {
+const NavigationMenu:FC<Props> = ({username, userType}: Props) => {
     return <>
         <nav className={styles.container}>
             <ol className={styles.group}>
+                <li className={styles.groupItem}>
+                    <Link href="/menu">
+                        Menu
+                    </Link>
+                </li>
                 <li className={styles.groupItem}>
                     <Link href="/contact">
                         Contact
@@ -21,7 +27,7 @@ const NavigationMenu:FC<Props> = ({username}: Props) => {
                     </Link>
                 </li>
             </ol>
-            { username ?
+            { !(userType == "Customer") && username ?
                 <ol className={styles.group}>
                     <li className={styles.groupItem}>
                         <Link href="/schedule">

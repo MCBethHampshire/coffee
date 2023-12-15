@@ -6,10 +6,10 @@ import { selectUser } from '../services/userSlice';
 
 
 const Shop: NextPage = () => {
-    const { username} = useSelector<RootState, RootState["user"]>(selectUser);
+    const { username,userType } = useSelector<RootState, RootState["user"]>(selectUser);
 
     return <>
-        <Header username={username}/>
+        <Header username={username} userType={userType} />
         <h1>
             Shop
         </h1>
